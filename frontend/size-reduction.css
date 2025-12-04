@@ -1,0 +1,85 @@
+/* Global size reduction - makes everything ~80% smaller without distortion */
+html {
+    font-size: 14px;
+    /* Default is 16px, this makes everything 87.5% */
+}
+
+/* Adjust container max-widths to be smaller */
+.container,
+.max-w-7xl {
+    max-width: 1120px !important;
+    /* 80% of 1400px */
+}
+
+/* Reduce padding on large sections */
+.hero-section,
+.main-content {
+    padding: 2.5rem 1rem !important;
+    /* Reduced from 3rem */
+}
+
+/* Navbar adjustments */
+nav {
+    padding: 0.75rem 1.5rem !important;
+    /* Slightly smaller */
+}
+
+/* Card padding reduction */
+.card,
+.analysis-card,
+.result-card {
+    padding: 1.5rem !important;
+    /* Reduced from 2rem */
+}
+
+/* Button size adjustment */
+button,
+.btn,
+.analyze-btn {
+    padding: 0.7rem 1.5rem !important;
+    /* Slightly smaller */
+    font-size: 0.95rem !important;
+}
+
+/* Heading size adjustments */
+h1 {
+    font-size: 2.2rem !important;
+    /* Reduced from 2.5rem */
+}
+
+h2 {
+    font-size: 1.6rem !important;
+    /* Reduced from 1.8rem */
+}
+
+h3 {
+    font-size: 1.3rem !important;
+    /* Reduced from 1.5rem */
+}
+
+/* Input fields */
+input,
+textarea,
+select {
+    font-size: 0.9rem !important;
+    padding: 0.6rem !important;
+}
+
+/* Upload area */
+.upload-area {
+    padding: 2rem !important;
+    /* Reduced from 3rem */
+}
+
+/* Feature cards */
+.feature-card {
+    padding: 1.2rem !important;
+}
+
+/* Responsive: Keep normal size on mobile */
+@media (max-width: 768px) {
+    html {
+        font-size: 16px;
+        /* Normal size on mobile */
+    }
+}

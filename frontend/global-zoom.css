@@ -1,0 +1,9 @@
+/* Global 80% zoom for all pages - consistent sizing */
+body {
+    zoom: 0.8;
+}
+
+/* Ensure page fills viewport properly at 80% zoom */
+html {
+    min-height: 100vh;
+}

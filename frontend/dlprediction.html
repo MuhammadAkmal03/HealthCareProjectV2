@@ -3,10 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analyse Chest X-ray - Pulse AI</title>
     <style>
-* {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -550,6 +550,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="global-zoom.css">
 </head>
 
 <body>
@@ -668,7 +669,7 @@
     </footer>
 
     <script>
-        const API_BASE_URL = 'http://localhost:8000';
+        const API_BASE_URL = 'api';
         function toggleMenu() {
             const navLinks = document.getElementById('navLinks');
             navLinks.classList.toggle('active');
@@ -786,46 +787,46 @@
         }
 
         function displayResults(result) {
-    const diagnosisNameEl = document.getElementById('diagnosisName');
-    const confidenceBadgeEl = document.getElementById('confidenceBadge');
-    
-    // Reset styles
-    diagnosisNameEl.style.color = '';
-    confidenceBadgeEl.style.background = '';
-    
-    if (result.predicted_condition === "Error") {
-        const errorMsg = result.error_message || 'An unknown error occurred.';
-        
-        // Check if it's a validation error (non-X-ray image)
-        if (errorMsg.includes('color photo') || 
-            errorMsg.includes('not an X-ray') || 
-            errorMsg.includes('too uniform') ||
-            errorMsg.includes('aspect ratio') ||
-            errorMsg.includes('brightness') ||
-            errorMsg.includes("doesn't appear to be") ||
-            errorMsg.includes("doesn't match")) {
-            
-            // Show validation error in RED with warning icon
-            diagnosisNameEl.innerHTML = '🚫 Invalid Image<br><span style="font-size: 0.9rem; font-weight: normal;">' + errorMsg + '</span>';
-            diagnosisNameEl.style.color = '#EF4444';
-            confidenceBadgeEl.textContent = 'Not X-ray';
-            confidenceBadgeEl.style.background = '#EF4444';
-            
-        } else {
-            // Generic error in dark red
-            diagnosisNameEl.innerHTML = '❌ Analysis Failed<br><span style="font-size: 0.9rem; font-weight: normal;">' + errorMsg + '</span>';
-            diagnosisNameEl.style.color = '#DC2626';
-            confidenceBadgeEl.textContent = 'Error';
-            confidenceBadgeEl.style.background = '#DC2626';
+            const diagnosisNameEl = document.getElementById('diagnosisName');
+            const confidenceBadgeEl = document.getElementById('confidenceBadge');
+
+            // Reset styles
+            diagnosisNameEl.style.color = '';
+            confidenceBadgeEl.style.background = '';
+
+            if (result.predicted_condition === "Error") {
+                const errorMsg = result.error_message || 'An unknown error occurred.';
+
+                // Check if it's a validation error (non-X-ray image)
+                if (errorMsg.includes('color photo') ||
+                    errorMsg.includes('not an X-ray') ||
+                    errorMsg.includes('too uniform') ||
+                    errorMsg.includes('aspect ratio') ||
+                    errorMsg.includes('brightness') ||
+                    errorMsg.includes("doesn't appear to be") ||
+                    errorMsg.includes("doesn't match")) {
+
+                    // Show validation error in RED with warning icon
+                    diagnosisNameEl.innerHTML = '🚫 Invalid Image<br><span style="font-size: 0.9rem; font-weight: normal;">' + errorMsg + '</span>';
+                    diagnosisNameEl.style.color = '#EF4444';
+                    confidenceBadgeEl.textContent = 'Not X-ray';
+                    confidenceBadgeEl.style.background = '#EF4444';
+
+                } else {
+                    // Generic error in dark red
+                    diagnosisNameEl.innerHTML = '❌ Analysis Failed<br><span style="font-size: 0.9rem; font-weight: normal;">' + errorMsg + '</span>';
+                    diagnosisNameEl.style.color = '#DC2626';
+                    confidenceBadgeEl.textContent = 'Error';
+                    confidenceBadgeEl.style.background = '#DC2626';
+                }
+            } else {
+                // Success - show result in purple
+                diagnosisNameEl.innerHTML = result.predicted_condition;
+                diagnosisNameEl.style.color = '#7E22CE';
+                confidenceBadgeEl.textContent = `${(result.confidence_score * 100).toFixed(1)}% Conf.`;
+                confidenceBadgeEl.style.background = '#7E22CE';
+            }
         }
-    } else {
-        // Success - show result in purple
-        diagnosisNameEl.innerHTML = result.predicted_condition;
-        diagnosisNameEl.style.color = '#7E22CE';
-        confidenceBadgeEl.textContent = `${(result.confidence_score * 100).toFixed(1)}% Conf.`;
-        confidenceBadgeEl.style.background = '#7E22CE';
-    }
-}
 
 
     </script>
