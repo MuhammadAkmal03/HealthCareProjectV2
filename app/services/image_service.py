@@ -5,6 +5,7 @@ import numpy as np
 from PIL import Image
 import tensorflow as tf
 import os
+from app.services.image_validator import ImageValidator
 
 # Setup logger for this service
 logger = logging.getLogger(__name__)
@@ -13,14 +14,19 @@ logger = logging.getLogger(__name__)
 class ImageService:
     """
     This service loads the trained deep learning model and performs image analysis.
-    Includes enhanced logging for debugging.
+    Includes image validation to reject non-X-ray images.
     """
 
     _model = None
-    _img_size = (224, 224)  # Updated for new DenseNet121 model
+    _validator = None
+    _img_size = (150, 150)
     _class_names = ["NORMAL", "Pneumonia"]
 
     def __init__(self):
+        # Initialize validator
+        if ImageService._validator is None:
+            ImageService._validator = ImageValidator()
+            logger.info("Image validator initialized")
     
         if ImageService._model is None:
             logger.info("Attempting to load deep learning model for the first time...")
@@ -69,7 +75,7 @@ class ImageService:
 
     async def analyze(self, image_base64: str) -> (str, float):
         """
-        Decodes a base64 image, preprocesses it, and returns a prediction.
+        Decodes a base64 image, validates it's an X-ray, preprocesses it, and returns a prediction.
         """
         if self._model is None:
             logger.error("Analysis attempted but the image model is not loaded.")
@@ -80,6 +86,16 @@ class ImageService:
         try:
             logger.info("Decoding base64 image string...")
             image_bytes = base64.b64decode(image_base64)
+
+            # VALIDATE: Check if image is likely a chest X-ray
+            logger.info("Validating if image is a chest X-ray...")
+            is_valid, error_msg, validated_img = self._validator.validate_image_bytes(image_bytes)
+            
+            if not is_valid:
+                logger.warning(f"Image validation failed: {error_msg}")
+                raise ValueError(error_msg)
+            
+            logger.info("✓ Image validated as likely chest X-ray")
 
             processed_image = self._preprocess_image_bytes(image_bytes)
 
@@ -101,6 +117,9 @@ class ImageService:
             )
             return predicted_class, confidence
 
+        except ValueError as e:
+            # Re-raise validation errors with original message
+            raise e
         except Exception as e:
             logger.error(
                 f"An error occurred during the image analysis process: {e}",

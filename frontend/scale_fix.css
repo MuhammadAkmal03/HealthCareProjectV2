@@ -1,0 +1,13 @@
+/* Add this CSS right after the opening <style> tag in each HTML file */
+
+/* Scale entire page to 80% for better fit at 100% browser zoom */
+body {
+    zoom: 0.8 !important;
+    -moz-transform: scale(0.8);
+    -moz-transform-origin: 0 0;
+}
+
+html, body {
+    width: 125% !important;
+    height: 125% !important;
+}

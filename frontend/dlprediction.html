@@ -1,104 +1,557 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analyse Chest X-ray - Pulse AI</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%); min-height: 100vh; }
-        
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+            min-height: 100vh;
+        }
+
         /* Navigation - Updated to match index.html */
-        nav { background: white; padding: 1rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-        .nav-container { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; }
-        .logo-icon { width: 50px; height: 50px; background: linear-gradient(135deg, #4169E1 0%, #1E90FF 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; }
-        .logo-text h1 { font-size: 1.5rem; color: #1a1a1a; }
-        .logo-text p { font-size: 0.85rem; color: #666; }
-        .nav-links { display: flex; gap: 2rem; align-items: center; }
-        .nav-link { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: #444; font-weight: 500; transition: color 0.3s; padding: 0.5rem 1rem; border-radius: 8px; }
-        .nav-link:hover { color: #4169E1; background: #f0f4ff; }
-        .nav-link.active { background: #1a1a1a; color: white; }
-        .hamburger { display: none; flex-direction: column; gap: 4px; cursor: pointer; }
-        .hamburger span { width: 25px; height: 3px; background: #1a1a1a; border-radius: 2px; transition: 0.3s; }
-        
-        .main-content { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem; }
-        .page-header { text-align: center; margin-bottom: 3rem; }
-        .page-header h2 { font-size: 2.5rem; color: #1a1a1a; margin-bottom: 1rem; }
-        .page-header p { font-size: 1.1rem; color: #666; }
-        .analysis-container { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
-        .card { background: white; border-radius: 16px; padding: 2.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        .card-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
-        .card-icon { width: 45px; height: 45px; background: #9333EA; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: white; }
-        .card-header h3 { font-size: 1.5rem; color: #1a1a1a; }
-        .card-subtitle { color: #666; font-size: 0.95rem; margin-bottom: 2rem; }
-        .upload-area { border: 3px dashed #d0d0d0; border-radius: 12px; padding: 3rem 2rem; text-align: center; transition: all 0.3s; cursor: pointer; background: #fafafa; margin-bottom: 2rem; }
-        .upload-area:hover { border-color: #9333EA; background: #f9f5ff; }
-        .upload-area.dragover { border-color: #9333EA; background: #f3e8ff; transform: scale(1.02); }
-        .upload-icon { font-size: 64px; color: #999; margin-bottom: 1rem; }
-        .upload-area h4 { font-size: 1.2rem; color: #333; margin-bottom: 0.5rem; }
-        .upload-area p { color: #666; font-size: 0.95rem; }
-        #fileInput { display: none; }
-        .image-preview { display: none; margin-bottom: 1.5rem; }
-        .image-preview.show { display: block; }
-        .preview-container { position: relative; border-radius: 12px; overflow: hidden; background: #000; }
-        .preview-image { width: 100%; height: auto; max-height: 400px; object-fit: contain; }
-        .remove-image { position: absolute; top: 10px; right: 10px; background: rgba(255, 255, 255, 0.9); border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
-        .remove-image:hover { background: #ff4444; color: white; transform: scale(1.1); }
-        .analyze-btn { width: 100%; padding: 1rem; background: #6b7280; color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: not-allowed; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
-        .analyze-btn.active { background: linear-gradient(135deg, #9333EA 0%, #7E22CE 100%); cursor: pointer; }
-        .analyze-btn.active:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(147, 51, 234, 0.4); }
-        .analyze-btn.loading { background: #9333EA; cursor: wait; }
-        .spinner { display: none; border: 3px solid #f3f3f3; border-top: 3px solid white; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
-        .analyze-btn.loading .spinner { display: block; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .results-card { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 500px; }
-        .eye-icon { font-size: 80px; margin-bottom: 2rem; opacity: 0.3; }
-        .placeholder-text { text-align: center; color: #999; font-size: 1.05rem; line-height: 1.8; }
-        .result-content { width: 100%; display: none; }
-        .result-content.show { display: block; }
-        .diagnosis-result { background: linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%); border: 2px solid #E9D5FF; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; }
-        .diagnosis-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-        .diagnosis-name { font-size: 1.75rem; color: #7E22CE; font-weight: 700; }
-        .confidence-badge { background: #7E22CE; color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; }
-        .disclaimer { font-size: 0.9rem; color: #6b7280; margin-top: 2rem; background: #FFF7ED; padding: 1rem; border-radius: 8px; border-left: 4px solid #F97316; }
+        nav {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4169E1 0%, #1E90FF 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            color: #1a1a1a;
+        }
+
+        .logo-text p {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: #444;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover {
+            color: #4169E1;
+            background: #f0f4ff;
+        }
+
+        .nav-link.active {
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #1a1a1a;
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h2 {
+            font-size: 2.5rem;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .analysis-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-icon {
+            width: 45px;
+            height: 45px;
+            background: #9333EA;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: white;
+        }
+
+        .card-header h3 {
+            font-size: 1.5rem;
+            color: #1a1a1a;
+        }
+
+        .card-subtitle {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+
+        .upload-area {
+            border: 3px dashed #d0d0d0;
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: #fafafa;
+            margin-bottom: 2rem;
+        }
+
+        .upload-area:hover {
+            border-color: #9333EA;
+            background: #f9f5ff;
+        }
+
+        .upload-area.dragover {
+            border-color: #9333EA;
+            background: #f3e8ff;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 64px;
+            color: #999;
+            margin-bottom: 1rem;
+        }
+
+        .upload-area h4 {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-area p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .image-preview {
+            display: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .image-preview.show {
+            display: block;
+        }
+
+        .preview-container {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .preview-image {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: contain;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .remove-image:hover {
+            background: #ff4444;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .analyze-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #6b7280;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: not-allowed;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .analyze-btn.active {
+            background: linear-gradient(135deg, #9333EA 0%, #7E22CE 100%);
+            cursor: pointer;
+        }
+
+        .analyze-btn.active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(147, 51, 234, 0.4);
+        }
+
+        .analyze-btn.loading {
+            background: #9333EA;
+            cursor: wait;
+        }
+
+        .spinner {
+            display: none;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        .analyze-btn.loading .spinner {
+            display: block;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .results-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+        }
+
+        .eye-icon {
+            font-size: 80px;
+            margin-bottom: 2rem;
+            opacity: 0.3;
+        }
+
+        .placeholder-text {
+            text-align: center;
+            color: #999;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .result-content {
+            width: 100%;
+            display: none;
+        }
+
+        .result-content.show {
+            display: block;
+        }
+
+        .diagnosis-result {
+            background: linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%);
+            border: 2px solid #E9D5FF;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .diagnosis-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .diagnosis-name {
+            font-size: 1.75rem;
+            color: #7E22CE;
+            font-weight: 700;
+        }
+
+        .confidence-badge {
+            background: #7E22CE;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .disclaimer {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-top: 2rem;
+            background: #FFF7ED;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #F97316;
+        }
 
         /* Footer Styles - Added from index.html */
-        footer { background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: white; padding: 3rem 2rem 1rem; margin-top: 4rem; }
-        .footer-container { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin-bottom: 2rem; }
-        .footer-section h4 { font-size: 1.25rem; margin-bottom: 1rem; color: #4169E1; }
-        .footer-section p { line-height: 1.8; color: #ccc; margin-bottom: 1rem; }
-        .footer-logo { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
-        .footer-logo h3 { font-size: 1.5rem; margin-bottom: 0.25rem; }
-        .footer-logo p { font-size: 0.85rem; color: #999; margin: 0; }
-        .footer-desc { color: #bbb; font-size: 0.95rem; }
-        .footer-links { list-style: none; }
-        .footer-links li { margin-bottom: 0.75rem; }
-        .footer-links a { color: #ccc; text-decoration: none; transition: color 0.3s; }
-        .footer-links a:hover { color: #4169E1; }
-        .footer-contact { list-style: none; }
-        .footer-contact li { margin-bottom: 0.75rem; color: #ccc; }
-        .footer-bottom { max-width: 1400px; margin: 0 auto; padding-top: 2rem; border-top: 1px solid #444; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-        .footer-bottom p { color: #999; margin: 0; }
-        .footer-bottom-links { display: flex; gap: 2rem; }
-        .footer-bottom-links a { color: #999; text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
-        .footer-bottom-links a:hover { color: #4169E1; }
+        footer {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            padding: 3rem 2rem 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: #4169E1;
+        }
+
+        .footer-section p {
+            line-height: 1.8;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-logo h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .footer-logo p {
+            font-size: 0.85rem;
+            color: #999;
+            margin: 0;
+        }
+
+        .footer-desc {
+            color: #bbb;
+            font-size: 0.95rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #4169E1;
+        }
+
+        .footer-contact {
+            list-style: none;
+        }
+
+        .footer-contact li {
+            margin-bottom: 0.75rem;
+            color: #ccc;
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid #444;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-bottom p {
+            color: #999;
+            margin: 0;
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-bottom-links a {
+            color: #999;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .footer-bottom-links a:hover {
+            color: #4169E1;
+        }
 
         /* Responsive Design */
-        @media (max-width: 1024px) { 
-            .analysis-container { grid-template-columns: 1fr; }
+        @media (max-width: 1024px) {
+            .analysis-container {
+                grid-template-columns: 1fr;
+            }
         }
+
         @media (max-width: 768px) {
-            .hamburger { display: flex; }
-            .nav-links { position: absolute; top: 100%; left: 0; right: 0; background: white; flex-direction: column; padding: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: none; gap: 0.5rem; }
-            .nav-links.active { display: flex; }
-            .nav-link { width: 100%; justify-content: center; }
-            .footer-container { grid-template-columns: 1fr; gap: 2rem; }
-            .footer-bottom { flex-direction: column; text-align: center; }
-            .footer-bottom-links { flex-direction: column; gap: 0.5rem; }
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                display: none;
+                gap: 0.5rem;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-link {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-bottom-links {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
         }
     </style>
 </head>
+
 <body>
     <nav>
         <div class="nav-container">
@@ -175,7 +628,8 @@
                         </div>
                     </div>
                     <div class="disclaimer">
-                        <strong>Disclaimer:</strong> This is an AI-generated analysis for informational purposes and is not a substitute for a professional diagnosis by a qualified radiologist.
+                        <strong>Disclaimer:</strong> This is an AI-generated analysis for informational purposes and is
+                        not a substitute for a professional diagnosis by a qualified radiologist.
                     </div>
                 </div>
             </div>
@@ -194,7 +648,8 @@
                     </div>
                 </div>
                 <p class="footer-desc">
-                    Transforming healthcare through artificial intelligence, providing cutting-edge solutions for medical professionals and patients worldwide.
+                    Transforming healthcare through artificial intelligence, providing cutting-edge solutions for
+                    medical professionals and patients worldwide.
                 </p>
             </div>
 
@@ -211,19 +666,19 @@
             </div>
         </div>
     </footer>
-    
+
     <script>
-        const API_BASE_URL = 'api';
+        const API_BASE_URL = 'http://localhost:8000';
         function toggleMenu() {
             const navLinks = document.getElementById('navLinks');
             navLinks.classList.toggle('active');
         }
 
         // Close mobile menu when clicking outside
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             const navLinks = document.getElementById('navLinks');
             const hamburger = document.querySelector('.hamburger');
-            
+
             if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
                 navLinks.classList.remove('active');
             }
@@ -241,7 +696,7 @@
         fileInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
         removeImageBtn.addEventListener('click', removeImage);
         analyzeBtn.addEventListener('click', analyzeImage);
-        
+
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             uploadArea.addEventListener(eventName, e => {
                 e.preventDefault();
@@ -263,10 +718,10 @@
             }
 
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 previewImg.src = e.target.result;
                 imageBase64 = e.target.result.split(',')[1];
-                
+
                 imagePreview.classList.add('show');
                 uploadArea.style.display = 'none';
                 analyzeBtn.classList.add('active');
@@ -280,7 +735,7 @@
             imagePreview.classList.remove('show');
             uploadArea.style.display = 'block';
             analyzeBtn.classList.remove('active');
-            
+
             document.getElementById('resultContent').classList.remove('show');
             document.getElementById('placeholderContent').style.display = 'block';
         }
@@ -290,7 +745,7 @@
 
             const btn = document.getElementById('analyzeBtn');
             const btnText = document.getElementById('btnText');
-            
+
             btn.classList.add('loading');
             btn.disabled = true;
             btnText.textContent = 'Analyzing...';
@@ -318,10 +773,10 @@
 
             } catch (error) {
                 console.error("Analysis failed:", error);
-                displayResults({ 
-                    predicted_condition: "Error", 
-                    confidence_score: 0, 
-                    error_message: error.message 
+                displayResults({
+                    predicted_condition: "Error",
+                    confidence_score: 0,
+                    error_message: error.message
                 });
             } finally {
                 btn.classList.remove('loading');
@@ -331,18 +786,49 @@
         }
 
         function displayResults(result) {
-            const diagnosisNameEl = document.getElementById('diagnosisName');
-            const confidenceBadgeEl = document.getElementById('confidenceBadge');
+    const diagnosisNameEl = document.getElementById('diagnosisName');
+    const confidenceBadgeEl = document.getElementById('confidenceBadge');
+    
+    // Reset styles
+    diagnosisNameEl.style.color = '';
+    confidenceBadgeEl.style.background = '';
+    
+    if (result.predicted_condition === "Error") {
+        const errorMsg = result.error_message || 'An unknown error occurred.';
+        
+        // Check if it's a validation error (non-X-ray image)
+        if (errorMsg.includes('color photo') || 
+            errorMsg.includes('not an X-ray') || 
+            errorMsg.includes('too uniform') ||
+            errorMsg.includes('aspect ratio') ||
+            errorMsg.includes('brightness') ||
+            errorMsg.includes("doesn't appear to be") ||
+            errorMsg.includes("doesn't match")) {
             
-            if (result.predicted_condition === "Error") {
-                diagnosisNameEl.textContent = 'Analysis Failed';
-                confidenceBadgeEl.textContent = 'Error';
-                alert(result.error_message || 'An unknown error occurred.');
-            } else {
-                diagnosisNameEl.textContent = result.predicted_condition;
-                confidenceBadgeEl.textContent = `${(result.confidence_score * 100).toFixed(1)}% Conf.`;
-            }
+            // Show validation error in RED with warning icon
+            diagnosisNameEl.innerHTML = '🚫 Invalid Image<br><span style="font-size: 0.9rem; font-weight: normal;">' + errorMsg + '</span>';
+            diagnosisNameEl.style.color = '#EF4444';
+            confidenceBadgeEl.textContent = 'Not X-ray';
+            confidenceBadgeEl.style.background = '#EF4444';
+            
+        } else {
+            // Generic error in dark red
+            diagnosisNameEl.innerHTML = '❌ Analysis Failed<br><span style="font-size: 0.9rem; font-weight: normal;">' + errorMsg + '</span>';
+            diagnosisNameEl.style.color = '#DC2626';
+            confidenceBadgeEl.textContent = 'Error';
+            confidenceBadgeEl.style.background = '#DC2626';
         }
+    } else {
+        // Success - show result in purple
+        diagnosisNameEl.innerHTML = result.predicted_condition;
+        diagnosisNameEl.style.color = '#7E22CE';
+        confidenceBadgeEl.textContent = `${(result.confidence_score * 100).toFixed(1)}% Conf.`;
+        confidenceBadgeEl.style.background = '#7E22CE';
+    }
+}
+
+
     </script>
 </body>
+
 </html>
