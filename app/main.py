@@ -20,7 +20,14 @@ app = FastAPI(
     redirect_slashes=False
 )
 
-origins = ["https://health-care-project-five.vercel.app","http://localhost", "http://127.0.0.1", "http://127.0.0.1:5500", "null"]
+origins = [
+    "https://health-care-project-v2.vercel.app",
+    "https://healthpro2-api-1079466778366.us-central1.run.app",
+    "http://localhost",
+    "http://127.0.0.1",
+    "http://127.0.0.1:5500",
+    "null"
+]
 
 app.add_middleware(
     CORSMiddleware,

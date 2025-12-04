@@ -58,8 +58,8 @@ class ImageValidator:
         
         avg_color_diff = (rg_diff.mean() + rb_diff.mean() + gb_diff.mean()) / 3
         
-        # Increased threshold - only reject obvious color photos
-        if avg_color_diff > 25:  # Was 15, now 25 - more lenient
+        # Stricter threshold - reject colorful photos
+        if avg_color_diff > 12:  # Lowered from 25 to 12 - rejects colorful images
             return False, "Image appears to be a color photo, not a medical X-ray. Please upload a chest X-ray image."
 
         # Check brightness distribution - VERY LENIENT
