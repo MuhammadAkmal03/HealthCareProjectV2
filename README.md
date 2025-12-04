@@ -1,176 +1,381 @@
-# **Pulse AI: End-to-End Multimodal Healthcare Platform**
+# 🏥 **Pulse AI - Advanced Healthcare Intelligence Platform**
 
-A production-ready application demonstrating a complete **MLOps lifecycle** for preliminary medical diagnostics and data analysis.
+[![Live Demo](https://img.shields.io/badge/Live-Demo-4169E1?style=for-the-badge&logo=vercel)](https://health-care-project-v2.vercel.app/)
+[![Backend API](https://img.shields.io/badge/API-Cloud%20Run-4285F4?style=for-the-badge&logo=google-cloud)](https://healthpro2-api-1079466778366.us-central1.run.app/docs)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
----
-
-##  Project Overview
-
-Pulse AI successfully integrates multiple state-of-the-art AI technologies into a single, cohesive web platform. The core achievement is moving three complex, data-intensive models into a single, efficient, and automated cloud environment.
-
-### Key Achievements
-
-| Feature | Technology & Contribution | MLOps Practice Demonstrated |
-|:---|:---|:---|
-| **Symptom Checker (ML)** | LightGBM classifier with **92% accuracy** . | **Data Preprocessing Pipelines** (`joblib`, `ColumnTransformer`) for clean real-time inference. |
-| **Image Analyzer (DL)** | TensorFlow CNN for X-ray analysis | **Model Optimization & Efficiency** |
-| **AI Medical Assistant** | **Retrieval-Augmented Generation (RAG)** using **Gemini** and **LangChain** / **Pinecone** vector store. | **LLM Grounding** and using **Vector Databases** for private knowledge. |
-| **Report Summarizer** | AI-powered medical report summarization using **Gemini LLM** to extract key insights from user-provided medical documents. | **Natural Language Processing** and **Document Understanding** for clinical text analysis. |
-| **Data Analytics** | Live monitoring dashboard visualizing **real-time prediction trends** and **top 5 user queries** (via Chart.js). Integrated Tableau dashboard for comprehensive dataset overview and exploratory data analysis. | **Data Logging & Monitoring** of operational metrics. |
+> **A production-grade, full-stack healthcare AI platform** combining Machine Learning, Deep Learning, and Large Language Models for intelligent medical diagnostics and patient care.
 
 ---
 
-##  MLOps & Deployment Pipeline
+## 🎯 **Project Overview**
 
-The entire backend deployment is automated to ensure reliability, maintainability, and quick iteration.
+Pulse AI is an **end-to-end MLOps-driven healthcare platform** that demonstrates enterprise-level AI/ML deployment practices. Built with modern cloud-native architecture, it showcases the complete lifecycle from model training to production deployment with real-time monitoring.
 
-### **1. CI/CD Workflow (GitHub Actions)**
+### **🌟 Key Highlights**
 
-The pipeline is triggered on every `git push` to the main branch and performs the following sequence:
-
-1. **Code Quality Check:** Runs `black` and `ruff` checks.
-2. **Unit Testing:** Executes **`pytest`** to validate all API endpoints for the Symptom Checker, Image Analyzer, and AI Assistant.
-3. **Containerization:** Builds a new, optimized **Docker** image (using a minimal base image).
-4. **Deployment:** Securely connects via SSH to the **AWS EC2** instance, pulls the new image from **Amazon ECR**, and restarts the container with zero downtime.
-
-### **2. Security & Artifact Management**
-
-* **Model Versioning:** Large model files (`.h5`, `.joblib`) are stored and managed using **Git LFS** (Large File Storage) to keep the main repository clean and fast.
-* **Decoupled Architecture:** The application uses a separated backend (FastAPI/Docker on AWS) and a frontend (HTML/JS on Vercel) for better scalability and flexibility.
+- ✅ **4 AI-Powered Modules** - ML classification, CNN image analysis, RAG chatbot, NLP summarization, and analytics dashboard
+- ✅ **Production Deployment** - Google Cloud Run (backend) + Vercel (frontend)
+- ✅ **Serverless Architecture** - Auto-scaling, cost-efficient infrastructure
+- ✅ **Real-time Analytics** - Live prediction monitoring and trend visualization
+- ✅ **Enterprise Security** - Input validation, CORS protection, API rate limiting
 
 ---
 
-##  Getting Started (Local Setup)
+## System Architecture
 
-To run the full backend and frontend on your machine:
+```mermaid
+graph TD
+    %% Styles
+    classDef frontend fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1;
+    classDef gateway fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20;
+    classDef aiService fill:#FFF3E0,stroke:#EF6C00,stroke-width:2px,color:#E65100;
+    classDef database fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px,color:#4A148C;
+    classDef external fill:#FAFAFA,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#212121;
 
-### **Prerequisites**
+    subgraph Frontend_Layer ["🖥️ Frontend Layer (Vercel CDN)"]
+        UI[User Interface HTML/JS]
+        SymptomUI[Symptom Checker UI]
+        XrayUI[X-ray Analyzer UI]
+        ChatUI[AI Assistant UI]
+        SummaryUI[Report Summarizer UI]
+        DashboardUI[Analytics Dashboard]
+    end
 
-* Python 3.10+
-* Docker Desktop (Installed and Running)
-* AWS CLI (Installed and Configured)
-* Gemini and Pinecone API Keys
+    subgraph API_Gateway ["☁️ API Gateway (Google Cloud Run)"]
+        FastAPI[FastAPI Backend]
+        Router[Request Router]
+        Security[Security & Validation]
+    end
 
-### **Installation & Execution**
+    subgraph AI_Services ["🧠 AI & ML Services"]
+        ML[ML Classifier<br/>LightGBM]
+        DL[DL Analyzer<br/>TensorFlow CNN]
+        RAG[RAG Engine<br/>LangChain]
+        GenAI[Generative AI<br/>Gemini LLM]
+    end
 
-1. **Clone the Repository:**
+    subgraph Data_Layer ["💾 Data Persistence"]
+        SQLite_Pred[(SQLite<br/>Predictions DB)]
+        SQLite_Logs[(SQLite<br/>System Logs)]
+        Pinecone[(Pinecone<br/>Vector DB)]
+    end
 
-```bash
-git clone https://github.com/MuhammadAkmal03/HealthCareProject
-cd HealthCareProject
+    subgraph External_APIs ["🌐 External Services"]
+        GeminiAPI[Google Gemini API]
+        HF_API[HuggingFace Embeddings]
+    end
+
+    %% Connections
+    UI --> SymptomUI & XrayUI & ChatUI & SummaryUI & DashboardUI
+    
+    SymptomUI -->|POST /predict| Security
+    XrayUI -->|POST /analyze| Security
+    ChatUI -->|POST /chat| Security
+    SummaryUI -->|POST /summarize| Security
+    DashboardUI -->|GET /stats| Security
+
+    Security --> Router
+    Router --> FastAPI
+
+    FastAPI -->|Structured Data| ML
+    FastAPI -->|Image Data| DL
+    FastAPI -->|Query + Context| RAG
+    FastAPI -->|Text/PDF| GenAI
+
+    ML -->|Store Result| SQLite_Pred
+    DL -->|Store Metadata| SQLite_Logs
+    RAG -->|Retrieve Context| Pinecone
+    RAG -->|Generate Answer| GeminiAPI
+    GenAI -->|Summarize| GeminiAPI
+    
+    RAG -.->|Get Embeddings| HF_API
+    
+    %% Dashboard Data Flow
+    SQLite_Pred -.->|Fetch Trends| FastAPI
+    FastAPI -.->|JSON Data| DashboardUI
+
+    %% Apply Styles
+    class UI,SymptomUI,XrayUI,ChatUI,SummaryUI,DashboardUI frontend;
+    class FastAPI,Router,Security gateway;
+    class ML,DL,RAG,GenAI aiService;
+    class SQLite_Pred,SQLite_Logs,Pinecone database;
+    class GeminiAPI,HF_API external;
 ```
 
-2. **Create/Update `.env`:** Add your secret API keys to a file named `.env` in the root directory.
-
-3. **Build the Docker Image:**
-
-```bash
-docker build -t pulse-ai-api .
-```
-
-4. **Run the Container:**
-
-```bash
-docker run -d --name pulse-ai-local -p 8000:8000 --env-file .env pulse-ai-api
-```
-
-* **Access API Docs:** `http://localhost:8000/docs`
-* **Access Frontend:** Open the `frontend/index.html` file in your browser.
+**Analytics**: Chart.js (Real-time) | Tableau (Comprehensive Dashboard)
 
 ---
 
-##  Architecture & Technology Stack
+## Project Documentation
 
-### **Backend (AWS EC2)**
-* **Framework:** FastAPI
-* **ML/DL Models:** LightGBM, TensorFlow/TFLite
-* **RAG Stack:** LangChain, Gemini, Pinecone
-* **Containerization:** Docker
-* **Container Registry:** Amazon ECR
+📚 **Detailed Project Report**: [View Documentation](YOUR_GOOGLE_DRIVE_OR_DOCUMENT_LINK_HERE)
 
-### **Frontend (Vercel)**
-* **Tech Stack:** HTML5, CSS3, JavaScript
-* **Visualization:** Chart.js
-* **Deployment:** Vercel (Serverless)
+*Comprehensive documentation including model training process, evaluation metrics, deployment strategies, and technical deep-dive.*
+
+---
+
+## Core Features
+
+### **1. 🧠 Symptom-Based Disease Prediction**
+- **Technology**: LightGBM Gradient Boosting Classifier
+- **Accuracy**: 92% on test dataset 
+- **Input Validation**: Age (18-80), Heart Rate (50-130 bpm), Temperature (35-41°C), O₂ Saturation (85-100%)
+- **Output**: Disease classification (Cold, Flu, Bronchitis, Pneumonia, Healthy)
+- **Features**: Real-time prediction with confidence scores
+
+### **2. 🫁 Chest X-ray Analysis**
+- **Technology**: Custom CNN (Convolutional Neural Network) - 
+- **Architecture**:  Conv layers + MaxPooling + Dense layers
+- **Validation**: Smart image validator (rejects non-medical images)
+- **Processing**: Automated preprocessing pipeline (resize, normalize, grayscale conversion)
+- **Output**: Binary classification (Normal/Pneumonia) with confidence score
+
+### **3. 💬 AI Medical Assistant (RAG)**
+- **Technology**: Retrieval-Augmented Generation with LangChain
+- **LLM**: Google Gemini 2.5 Flash
+- **Vector Database**: Pinecone (medical knowledge base)
+- **Embeddings**: HuggingFace `all-MiniLM-L6-v2` (90MB)
+- **Features**: 
+  - Context-aware medical Q&A
+  - Chat history management
+  - Source attribution from medical documents
+  - Topic extraction and logging
+
+### **4. 📄 Medical Report Summarizer**
+- **Technology**: Google Gemini LLM
+- **Input**: PDF reports or raw text
+- **Output**: Concise medical summaries with key findings
+- **Use Case**: Quick review of lab reports, discharge summaries
+
+### **5. 📊 Real-time Analytics Dashboard**
+- **Metrics Tracked**:
+  - Prediction trends (time-series visualization)
+  - Top 5 user queries
+  - Disease distribution
+  - System health monitoring
+- **Visualization**: Chart.js + Tableau integration
+
+---
+
+## 🛠️ **Technology Stack**
+
+### **Backend**
+| Component | Technology | Purpose |
+|-----------|-----------|---------|
+| **API Framework** | FastAPI | High-performance async API |
+| **ML Framework** | Scikit-learn, LightGBM | Traditional ML models |
+| **DL Framework** | TensorFlow/Keras | Deep learning (CNN) |
+| **LLM Integration** | LangChain, Google Gemini | RAG and summarization |
+| **Vector DB** | Pinecone | Semantic search |
+| **Database** | SQLite | Prediction logging |
+| **Containerization** | Docker | Reproducible deployments |
+| **Cloud Platform** | Google Cloud Run | Serverless backend hosting |
+
+### **Frontend**
+| Component | Technology |
+|-----------|-----------|
+| **UI Framework** | Vanilla HTML/CSS/JS |
+| **Charts** | Chart.js |
+| **Hosting** | Vercel (CDN + Auto-deploy) |
+| **Styling** | Custom CSS with responsive design |
 
 ### **DevOps & MLOps**
-* **CI/CD:** GitHub Actions
-* **Version Control:** Git, Git LFS
-* **Cloud Provider:** AWS (EC2, ECR)
-* **Monitoring:** Custom logging and analytics dashboard
+- **CI/CD**: GitHub Actions (automated testing + deployment)
+- **Model Storage**: Git LFS (Large File Storage)
+- **Monitoring**: Google Cloud Logging
+- **Version Control**: Git + GitHub
 
 ---
 
-### **Production Features**
+## 📈 **MLOps Practices Demonstrated**
 
-*  **Zero-downtime deployments** using Docker container orchestration
-*  **Automated testing** with pytest for all API endpoints
-*  **Real-time analytics** dashboard for monitoring usage patterns
-*  **Secure API key management** using environment variables
-*  **CORS configuration** for secure cross-origin requests
-*  **Scalable architecture** with decoupled frontend and backend
+### **1. Model Lifecycle Management**
+- ✅ **Training**: Jupyter notebooks with experiment tracking
+- ✅ **Validation**: Separate test datasets with metrics logging
+- ✅ **Versioning**: Git LFS for model artifacts
+- ✅ **Deployment**: Automated Docker builds with model inclusion
+
+### **2. Data Pipeline**
+- ✅ **Preprocessing**: `ColumnTransformer` pipelines (saved as `.joblib`)
+- ✅ **Feature Engineering**: Automated scaling and encoding
+- ✅ **Validation**: Input range checks (frontend + backend)
+- ✅ **Logging**: All predictions stored in SQLite for analysis
+
+### **3. Production Deployment**
+- ✅ **Containerization**: Multi-stage Docker builds
+- ✅ **Serverless**: Auto-scaling on Google Cloud Run
+- ✅ **Zero-downtime**: Rolling updates
+- ✅ **Cost Optimization**: Pay-per-request pricing
+
+### **4. Monitoring & Observability**
+- ✅ **Logging**: Structured logs with Cloud Logging
+- ✅ **Metrics**: Prediction counts, response times
+- ✅ **Alerting**: Error rate monitoring
+- ✅ **Analytics**: User query trends
 
 ---
 
-##  Environment Configuration
+## 🚀 **Deployment Architecture**
 
-Create a `.env` file in the project root with the following variables:
+### **Production URLs**
+- **Frontend**: https://health-care-project-v2.vercel.app/
+- **Backend API**: https://healthpro2-api-1079466778366.us-central1.run.app/
+- **API Documentation**: https://healthpro2-api-1079466778366.us-central1.run.app/docs
 
-```env
-# API Keys
-GEMINI_API_KEY=your_gemini_api_key_here
-PINECONE_API_KEY=your_pinecone_api_key_here
-
-# AWS Configuration (for deployment)
-AWS_ACCESS_KEY_ID=your_aws_access_key
-AWS_SECRET_ACCESS_KEY=your_aws_secret_key
-AWS_REGION=your_aws_region
-ECR_REPO=your_ecr_repository_url
-EC2_HOST=your_host
-EC2_USERNAME=username
-EC2_SSH_KEY=ssh_key
+### **Deployment Flow**
 
 ```
+Developer Push → GitHub → Vercel (Frontend Auto-deploy)
+                    ↓
+              Local Build → Docker Image → GCR → Cloud Run (Backend)
+```
+
+### **Infrastructure Details**
+- **Backend**: Google Cloud Run (2 vCPU, 2GB RAM, auto-scaling 0-10 instances)
+- **Frontend**: Vercel Edge Network (Global CDN)
+- **Database**: SQLite (embedded, suitable for demo/MVP)
+- **Vector Store**: Pinecone Cloud (managed service)
 
 ---
 
-##  Testing
+## 💻 **Local Development Setup**
 
-Run the test suite to ensure all components are working correctly:
-
+### **Prerequisites**
 ```bash
-# Install test dependencies
-pip install pytest pytest-cov
+- Python 3.10+
+- Docker Desktop
+- Git LFS
+- Google Cloud SDK (for deployment)
+```
 
-# Run all tests
-pytest tests/
+### **1. Clone Repository**
+```bash
+git clone https://github.com/MuhammadAkmal03/HealthCareProjectV2.git
+cd HealthPro2
+```
 
-# Run tests with coverage report
-pytest --cov=app tests/
+### **2. Install Dependencies**
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+### **3. Set Environment Variables**
+Create `.env` file:
+```env
+GOOGLE_API_KEY=your_gemini_api_key
+PINECONE_API_KEY=your_pinecone_api_key
+```
+
+### **4. Run Backend Locally**
+```bash
+uvicorn app.main:app --reload --port 8000
+```
+
+### **5. Open Frontend**
+```bash
+cd frontend
+# Open index.html in browser or use Live Server
 ```
 
 ---
 
-##  Future Enhancements
+## 🧪 **Testing**
 
-- [ ] Add more medical imaging models (CT scans, MRI)
-- [ ] Implement user authentication and history tracking
-- [ ] Expand symptom checker with more diseases
-- [ ] Add multi-language support
-- [ ] Integrate real-time model performance monitoring
-- [ ] Implement A/B testing for model improvements
+### **Run Unit Tests**
+```bash
+pytest tests/ -v
+```
+
+### **Test API Endpoints**
+```bash
+# Health check
+curl http://localhost:8000/
+
+# Symptom prediction
+curl -X POST http://localhost:8000/predict/ \
+  -H "Content-Type: application/json" \
+  -d '{"Age": 45, "Gender": "Male", "Heart_Rate_bpm": 90, ...}'
+```
+
+---
+
+## 📊 **Model Performance**
+
+| Model | Accuracy | Size | Inference Time |
+|-------|----------|------|----------------|
+| **LightGBM Classifier** | 92% | 2.5MB | ~50ms |
+| **CNN (X-ray)** | 93% | 143MB | ~200ms (CPU) |
+| **RAG System** | N/A | 90MB (embeddings) | ~1-2s (LLM call) |
 
 ---
 
-##  Contributing
+## 🔒 **Security Features**
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+- ✅ **Input Validation**: Pydantic schemas with range checks
+- ✅ **CORS Protection**: Whitelist-based origin control
+- ✅ **Image Validation**: Rejects non-medical images
+- ✅ **API Rate Limiting**: Cloud Run concurrency limits
+- ✅ **Environment Secrets**: Secure API key management
 
 ---
+
+## 🎓 **Learning Outcomes**
+
+This project demonstrates proficiency in:
+
+1. **Machine Learning**: Classification, model evaluation, hyperparameter tuning
+2. **Deep Learning**: CNN architecture, image preprocessing, transfer learning concepts
+3. **NLP & LLMs**: RAG systems, vector databases, prompt engineering
+4. **MLOps**: CI/CD, containerization, model versioning, monitoring
+5. **Cloud Computing**: Serverless deployment, auto-scaling, cost optimization
+6. **Full-Stack Development**: API design, frontend integration, UX/UI
+7. **Software Engineering**: Clean code, testing, documentation, Git workflow
+
+---
+
+## 📝 **Future Enhancements**
+
+- [ ] **Model Improvements**: Implement transfer learning (ResNet, EfficientNet)
+- [ ] **Database Migration**: PostgreSQL for production scalability
+- [ ] **Authentication**: User accounts with OAuth2
+- [ ] **Mobile App**: React Native or Flutter
+- [ ] **Advanced Analytics**: Predictive trends, anomaly detection
+- [ ] **Multi-language Support**: i18n for global reach
+
+---
+
+## 👨‍💻 **Author**
+
+**Muhammad Akmal**  
+📧 Email: muhammadakmaltp@gmail.com  
+🔗 LinkedIn: [Your LinkedIn]  
+
+---
+
+## 📄 **License**
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 **Acknowledgments**
+
+- **Google Gemini** for LLM API access
+- **Pinecone** for vector database
+- **Vercel** for frontend hosting
+- **Google Cloud** for backend infrastructure
+- **HuggingFace** for pre-trained embeddings
+
+---
+
+<div align="center">
+
+### ⭐ **If you found this project helpful, please consider giving it a star!** ⭐
+
+</div>
+
+
 
