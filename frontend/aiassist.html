@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Medical Assistant - Pulse AI</title>
     <style>
-* {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -21,7 +22,7 @@
         nav {
             background: white;
             padding: 1rem 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -137,7 +138,7 @@
             background: white;
             padding: 0.5rem;
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
         .tab-btn {
@@ -182,7 +183,7 @@
             background: white;
             border-radius: 16px;
             padding: 2.5rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
         .card-header {
@@ -268,7 +269,7 @@
             border-radius: 12px;
             line-height: 1.6;
             color: #333;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .message.user .message-text {
@@ -332,7 +333,7 @@
             background: white;
             border-radius: 16px;
             padding: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
         .sidebar-header {
@@ -688,7 +689,7 @@
                 background: white;
                 flex-direction: column;
                 padding: 1rem;
-                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
                 display: none;
                 gap: 0.5rem;
             }
@@ -739,6 +740,7 @@
     <link rel="stylesheet" href="size-reduction.css">
     <link rel="stylesheet" href="global-zoom.css">
 </head>
+
 <body>
     <!-- Navigation -->
     <nav>
@@ -797,7 +799,9 @@
                             <div class="message-avatar">🤖</div>
                             <div class="message-content">
                                 <div class="message-text">
-                                    Hello! I'm your AI Medical Assistant. I can help answer health-related questions, provide general medical information, and guide you on when to seek professional care. How can I assist you today?
+                                    Hello! I'm your AI Medical Assistant. I can help answer health-related questions,
+                                    provide general medical information, and guide you on when to seek professional
+                                    care. How can I assist you today?
                                 </div>
                                 <div class="message-time">08:54 AM</div>
                             </div>
@@ -805,7 +809,8 @@
                     </div>
 
                     <div class="chat-input-container">
-                        <input type="text" class="chat-input" id="chatInput" placeholder="Type your health question here..." onkeypress="handleKeyPress(event)">
+                        <input type="text" class="chat-input" id="chatInput"
+                            placeholder="Type your health question here..." onkeypress="handleKeyPress(event)">
                         <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send</button>
                     </div>
                 </div>
@@ -851,11 +856,13 @@
                         </div>
                         <button class="remove-file-btn" onclick="removeFile()">Remove</button>
                     </div>
-                    <div class="file-upload-btn" id="fileUploadBtn" onclick="document.getElementById('pdfInput').click()">
+                    <div class="file-upload-btn" id="fileUploadBtn"
+                        onclick="document.getElementById('pdfInput').click()">
                         <div class="upload-icon">⬆️</div>
                         <p>Choose File</p>
                     </div>
-                    <input type="file" id="pdfInput" class="file-input" accept=".pdf" onchange="handleFileUpload(event)">
+                    <input type="file" id="pdfInput" class="file-input" accept=".pdf"
+                        onchange="handleFileUpload(event)">
                 </div>
 
                 <div class="divider">
@@ -864,7 +871,8 @@
 
                 <div class="text-section">
                     <h4>Paste Report Text</h4>
-                    <textarea class="text-area" id="reportText" placeholder="Paste your medical report text here..."></textarea>
+                    <textarea class="text-area" id="reportText"
+                        placeholder="Paste your medical report text here..."></textarea>
                 </div>
 
                 <button class="generate-btn" id="generateBtn" onclick="generateSummary()">
@@ -891,7 +899,8 @@
                     </div>
                 </div>
                 <p class="footer-desc">
-                    Transforming healthcare through artificial intelligence, providing cutting-edge solutions for medical professionals and patients worldwide.
+                    Transforming healthcare through artificial intelligence, providing cutting-edge solutions for
+                    medical professionals and patients worldwide.
                 </p>
             </div>
 
@@ -911,8 +920,8 @@
     </footer>
 
     <script>
-      
-        const API_BASE_URL = 'api';
+
+        const API_BASE_URL = 'https://healthpro2-api-1079466778366.us-central1.run.app';
 
         function toggleMenu() {
             const navLinks = document.getElementById('navLinks');
@@ -928,17 +937,17 @@
         }
 
         //  CHATBOT FUNCTIONS
-        
+
         async function sendMessage() {
             const input = document.getElementById('chatInput');
             const sendBtn = document.getElementById('sendBtn');
             const message = input.value.trim();
-            
+
             if (message) {
                 addMessage(message, 'user');
                 input.value = '';
                 sendBtn.disabled = true;
-                
+
                 // Show typing indicator
                 const typingDiv = document.createElement('div');
                 typingDiv.className = 'message bot';
@@ -950,7 +959,7 @@
                     </div>
                 `;
                 document.getElementById('chatMessages').appendChild(typingDiv);
-                
+
                 try {
                     const response = await generateAIResponse(message);
                     const typingIndicator = document.getElementById('typing-indicator');
@@ -977,13 +986,13 @@
                 const chatHistory = [];
                 const messages = document.querySelectorAll('.message');
                 let lastUserMessage = null;
-                
+
                 messages.forEach((msg) => {
                     const text = msg.querySelector('.message-text').textContent;
                     if (text === "Hello! I'm your AI Medical Assistant. I can help answer health-related questions, provide general medical information, and guide you on when to seek professional care. How can I assist you today?") {
                         return; // Skip initial greeting
                     }
-                    
+
                     if (msg.classList.contains('user')) {
                         lastUserMessage = text;
                     } else if (msg.classList.contains('bot') && lastUserMessage) {
@@ -992,10 +1001,10 @@
                     }
                 });
 
-                
 
 
-            const response = await fetch(`${API_BASE_URL}/assistant/chat`, {
+
+                const response = await fetch(`${API_BASE_URL}/assistant/chat`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1027,7 +1036,7 @@
         function addMessage(text, sender) {
             const chatMessages = document.getElementById('chatMessages');
             const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-            
+
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${sender}`;
             messageDiv.innerHTML = `
@@ -1037,7 +1046,7 @@
                     <div class="message-time">${time}</div>
                 </div>
             `;
-            
+
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
@@ -1048,7 +1057,7 @@
         }
 
         //  REPORT SUMMARIZER FUNCTIONS 
-        
+
         let uploadedFile = null;
 
         function handleFileUpload(event) {
@@ -1058,7 +1067,7 @@
                     alert('Please upload a PDF file');
                     return;
                 }
-                
+
                 uploadedFile = file;
                 document.getElementById('fileName').textContent = file.name;
                 document.getElementById('filePreview').classList.add('show');
@@ -1076,7 +1085,7 @@
 
         async function generateSummary() {
             const reportText = document.getElementById('reportText').value.trim();
-            
+
             if (!uploadedFile && !reportText) {
                 alert('Please upload a PDF file or paste report text');
                 return;
@@ -1088,7 +1097,7 @@
 
             try {
                 let requestBody = {};
-                
+
                 if (reportText) {
                     requestBody.raw_text = reportText;
                 } else if (uploadedFile) {
@@ -1137,14 +1146,15 @@
         }
 
         // Close mobile menu when clicking outside
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             const navLinks = document.getElementById('navLinks');
             const hamburger = document.querySelector('.hamburger');
-            
+
             if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
                 navLinks.classList.remove('active');
             }
         });
     </script>
 </body>
+
 </html>
