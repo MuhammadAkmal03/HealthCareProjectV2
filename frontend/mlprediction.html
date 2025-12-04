@@ -570,44 +570,34 @@
                 <form id="predictionForm">
                     <div class="form-grid">
                         <div class="form-group"><label for="age">Age</label><input type="number" id="age"
-                                placeholder="e.g., 52" required></div>
+                                placeholder="e.g., 52" min="18" max="80" required></div>
                         <div class="form-group"><label for="gender">Gender</label><select id="gender" required>
                                 <option value="" disabled selected>Select gender</option>
                                 <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                            </select></div>
-                        <div class="form-group"><label for="heartRate">Heart Rate (bpm)</label><input type="number"
-                                id="heartRate" placeholder="e.g., 90" required></div>
-                        <div class="form-group"><label for="temperature">Body Temperature (°C)</label><input
-                                type="number" id="temperature" placeholder="e.g., 38.5" step="0.1" required></div>
-                        <div class="form-group"><label for="oxygen">Oxygen Saturation (%)</label><input type="number"
-                                id="oxygen" placeholder="e.g., 94" step="0.1" required></div>
-                        <div class="form-group"><label for="bloodPressure">Blood Pressure (e.g., 140/90)</label><input
-                                type="text" id="bloodPressure" placeholder="140/90" pattern="\d{2,3}/\d{2,3}" required>
                         </div>
-                    </div>
-                    <div class="symptoms-section">
-                        <h4>Select Your Symptoms</h4>
-                        <div class="symptoms-grid">
-                            <div class="checkbox-group"><input type="checkbox" id="cough" name="symptoms"
-                                    value="Cough"><label for="cough">Cough</label></div>
-                            <div class="checkbox-group"><input type="checkbox" id="fever" name="symptoms"
-                                    value="Fever"><label for="fever">Fever</label></div>
-                            <div class="checkbox-group"><input type="checkbox" id="headache" name="symptoms"
-                                    value="Headache"><label for="headache">Headache</label></div>
-                            <div class="checkbox-group"><input type="checkbox" id="fatigue" name="symptoms"
-                                    value="Fatigue"><label for="fatigue">Fatigue</label></div>
-                            <div class="checkbox-group"><input type="checkbox" id="runnynose" name="symptoms"
-                                    value="Runny nose"><label for="runnynose">Runny nose</label></div>
-                            <div class="checkbox-group"><input type="checkbox" id="sorethroat" name="symptoms"
-                                    value="Sore throat"><label for="sorethroat">Sore throat</label></div>
-                            <div class="checkbox-group"><input type="checkbox" id="shortness" name="symptoms"
-                                    value="Shortness of breath"><label for="shortness">Shortness of breath</label></div>
-                            <div class="checkbox-group"><input type="checkbox" id="bodyache" name="symptoms"
-                                    value="Body ache"><label for="bodyache">Body ache</label></div>
+                        <div class="symptoms-section">
+                            <h4>Select Your Symptoms</h4>
+                            <div class="symptoms-grid">
+                                <div class="checkbox-group"><input type="checkbox" id="cough" name="symptoms"
+                                        value="Cough"><label for="cough">Cough</label></div>
+                                <div class="checkbox-group"><input type="checkbox" id="fever" name="symptoms"
+                                        value="Fever"><label for="fever">Fever</label></div>
+                                <div class="checkbox-group"><input type="checkbox" id="headache" name="symptoms"
+                                        value="Headache"><label for="headache">Headache</label></div>
+                                <div class="checkbox-group"><input type="checkbox" id="fatigue" name="symptoms"
+                                        value="Fatigue"><label for="fatigue">Fatigue</label></div>
+                                <div class="checkbox-group"><input type="checkbox" id="runnynose" name="symptoms"
+                                        value="Runny nose"><label for="runnynose">Runny nose</label></div>
+                                <div class="checkbox-group"><input type="checkbox" id="sorethroat" name="symptoms"
+                                        value="Sore throat"><label for="sorethroat">Sore throat</label></div>
+                                <div class="checkbox-group"><input type="checkbox" id="shortness" name="symptoms"
+                                        value="Shortness of breath"><label for="shortness">Shortness of breath</label>
+                                </div>
+                                <div class="checkbox-group"><input type="checkbox" id="bodyache" name="symptoms"
+                                        value="Body ache"><label for="bodyache">Body ache</label></div>
+                            </div>
                         </div>
-                    </div>
-                    <button type="submit" class="predict-btn">Predict Disease</button>
+                        <button type="submit" class="predict-btn">Predict Disease</button>
                 </form>
             </div>
 
