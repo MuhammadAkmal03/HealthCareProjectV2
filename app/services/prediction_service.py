@@ -6,6 +6,9 @@ from datetime import datetime
 from typing import Dict
 from threading import Lock
 
+# Import GCS storage for data persistence
+from app.services.gcs_storage import restore_db_from_gcs, backup_db_to_gcs
+
 logger = logging.getLogger(__name__)
 
 DB_PATH = "predictions.db"
@@ -26,6 +29,9 @@ class PredictionService:
                 logger.info("Successfully loaded model artifacts.")
             except Exception as e:
                 logger.error(f"CRITICAL ERROR loading model artifacts: {e}", exc_info=True)
+
+            # Restore database from GCS if available (for persistence across restarts)
+            restore_db_from_gcs()
 
             # Initialize the database table
             try:
@@ -60,6 +66,9 @@ class PredictionService:
                 conn.commit()
                 conn.close()
                 logger.info(f"Saved prediction '{diagnosis}' to database.")
+                
+                # Backup to GCS after each save for persistence
+                backup_db_to_gcs()
             except Exception as e:
                 logger.error(f"Failed to save prediction to database: {e}", exc_info=True)
 

@@ -10,8 +10,10 @@ COPY requirements.txt .
 # Step 4: Install dependencies with a longer timeout
 RUN pip install --no-cache-dir --timeout=600 -r requirements.txt
 
+# Step 4.5: Pre-download HuggingFace model to avoid rate limiting
+RUN python -c "from langchain_huggingface import HuggingFaceEmbeddings; HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2')"
+
 # Step 5: Copy your model artifacts into the container
-# This is a critical step before copying the app code that uses them.
 COPY ./ml_models /app/ml_models
 
 # Step 6: Copy your application code into the container

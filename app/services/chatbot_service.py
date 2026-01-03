@@ -8,6 +8,9 @@ from datetime import datetime
 from typing import List, Dict
 import pandas as pd
 
+# Import GCS storage for data persistence
+from app.services.gcs_storage import restore_db_from_gcs, backup_db_to_gcs
+
 # LangChain components
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_pinecone import PineconeVectorStore
@@ -73,6 +76,9 @@ class ChatbotService:
                 ChatbotService._summarize_chain = load_summarize_chain(llm=ChatbotService._llm, chain_type="stuff", prompt=summary_prompt)
                 logger.info("Summarization chain created successfully.")
 
+                # Restore database from GCS if available (for persistence across restarts)
+                restore_db_from_gcs()
+
                 # 5. Connect to Database and Create Tables for BOTH charts
                 ChatbotService._db_connection = sqlite3.connect(DB_PATH, check_same_thread=False)
                 cursor = ChatbotService._db_connection.cursor()
@@ -106,6 +112,9 @@ class ChatbotService:
             cursor.execute("INSERT INTO chatbot_queries (topic, timestamp) VALUES (?, ?)", (topic, timestamp))
             self._db_connection.commit()
             logger.info(f"Saved query topic '{topic}' to database.")
+            
+            # Backup to GCS after save for persistence
+            backup_db_to_gcs()
         except Exception as e:
             logger.error(f"Failed to save query topic: {e}", exc_info=True)
             

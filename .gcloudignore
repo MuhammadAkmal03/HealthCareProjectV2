@@ -1,0 +1,56 @@
+# This file specifies files that are *not* uploaded to Google Cloud
+# using gcloud. It follows the same syntax as .gitignore.
+
+# IMPORTANT: ml_models directory MUST be included for Docker build!
+# Do NOT use #!include:.gitignore because it excludes ml_models
+
+# Python pycache:
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Development files
+.git/
+.gitignore
+.gitattributes
+tests/
+
+# IDE
+.vscode/
+.idea/
+
+# Local data (not ml_models!)
+data/
+Data/
+Img_data/
+predictions.db
+
+# Development dependencies
+requirements-dev.txt
+pyproject.toml
+setup.py
+
+# Scripts
+add_global_zoom.py
+
+# Frontend (deployed separately to Vercel)
+frontend/
+
+# Deployment and documentation files
+deploy-gcp.ps1
+cloudbuild.yaml
+*.md
+
+# Other unnecessary files
+*.csv
+*.pdf
+*.png
+.ruff_cache/
+.pytest_cache/
+mlruns/
+artifacts/
