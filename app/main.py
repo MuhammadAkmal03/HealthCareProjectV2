@@ -46,19 +46,19 @@ app.include_router(health_assistant.router, prefix="/assistant", tags=["AI Assis
 
 
 def _prewarm_services():
-    """Pre-loads heavy ML models in the background so the first user request is instant."""
+    """Pre-loads heavy ML models using the same singletons the API uses."""
     try:
         logger.info("Pre-warming ImageService (TF model)...")
-        from app.services.image_service import ImageService
-        ImageService()
+        from app.api.scan_analyzer import get_image_service
+        get_image_service()
         logger.info("ImageService pre-warm complete.")
     except Exception as e:
         logger.warning(f"ImageService pre-warm failed (non-fatal): {e}")
 
     try:
         logger.info("Pre-warming ChatbotService (HuggingFace embeddings)...")
-        from app.services.chatbot_service import ChatbotService
-        ChatbotService()
+        from app.api.health_assistant import get_chatbot_service
+        get_chatbot_service()
         logger.info("ChatbotService pre-warm complete.")
     except Exception as e:
         logger.warning(f"ChatbotService pre-warm failed (non-fatal): {e}")
